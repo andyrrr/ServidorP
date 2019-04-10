@@ -3,6 +3,7 @@
 //
 
 #include "Juego.h"
+#include "Diccionario.h"
 
 Juego::Juego(int idjuego, int cantidaduser) : IDJuego(idjuego), CantidadUser(cantidaduser) {
 
@@ -10,35 +11,41 @@ Juego::Juego(int idjuego, int cantidaduser) : IDJuego(idjuego), CantidadUser(can
 }
 
 void Juego::recibirPaq(Empaquetar *recibido) {
-    for (int i = 0; i < recibido->getListaCambios()->size; i++) {
-        Nodo *cambio = recibido->getListaCambios()->retornar(i);
-        cout << cambio->letra << endl;
-        cout<<(ListaCambiosJuego->contiene(cambio)==false)<<endl;
-        cout<<"muere"<<endl;
-        if(ListaCambiosJuego->contiene(cambio)==false){
-            ListaCambiosJuego->addLetra(cambio->letra, cambio->col, cambio->fil);
-            cout<<"se agrego"<<endl;
+
+    Diccionario din;
+    string palabra = din.hacerString(recibido->getListaCambios());
+
+    if (din.compararString(palabra)==true){
+        //Acá solo entra si verifica la palabra
+        for (int i = 0; i < recibido->getListaCambios()->size; i++) {
+            Nodo *cambio = recibido->getListaCambios()->retornar(i);
+            cout << cambio->letra << endl;
+            cout<<(ListaCambiosJuego->contiene(cambio)==false)<<endl;
+            cout<<"muere"<<endl;
+            if(ListaCambiosJuego->contiene(cambio)==false){
+                ListaCambiosJuego->addLetra(cambio->letra, cambio->col, cambio->fil);
+                cout<<"se agrego"<<endl;
+                verificacionPalabra=true;
+            }
         }
+    }else{
+        verificacionPalabra=false;
     }
+
     cout << "cambiosssss" << endl;
-    ListaCambiosJuego->vernodos();
 
     cout<<"CJ"<<recibido->getCrearJuego()<<endl;
     cout<<"AJ"<<recibido->getActualizarJuego()<<endl;
     cout<<"Ado"<<recibido->getActualizado()<<endl;
 
     if (!recibido->getActualizarJuego()){
-        crearJ= false;
         ActJ=false;
         Actudo=false;
     }else{
-        crearJ=false;
         ActJ=false;
         Actudo=true;
     }
 }
-
-
 
 
 json Juego::StringtoJson(string s1) {
@@ -79,7 +86,7 @@ Lista* Juego::generateList(json j1) {
 }
 
 char *Juego::GenerarPaq(){
-    Empaquetar *enviar = new Empaquetar(0, 0, crearJ, ActJ, Actudo, ListaCambiosJuego);
+    Empaquetar *enviar = new Empaquetar(0, 0, verificacionPalabra, ActJ, Actudo, ListaCambiosJuego);
     json jsonEnviar = enviar->generarJsonEmpaquetado();
     string stringEnviar = jsonEnviar.dump();
     char static mensajeServer[sizeof(stringEnviar)];

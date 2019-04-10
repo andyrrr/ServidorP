@@ -23,7 +23,7 @@ public:
     void recibirPaq(Empaquetar*);
     int IDJuego;
     int CantidadUser;
-    bool crearJ, ActJ, Actudo;
+    bool verificacionPalabra, ActJ, Actudo;
 };
 
 
