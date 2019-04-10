@@ -46,7 +46,6 @@ void Juego::recibirPaq(Empaquetar *recibido) {
         Actudo=true;
     }
 }
-l<
 
 json Juego::StringtoJson(string s1) {
     cout << "el string" << s1 << endl;
