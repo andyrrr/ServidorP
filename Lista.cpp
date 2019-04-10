@@ -6,6 +6,8 @@
  * @authors Daniel Acuña Mora, Josue Mata
  */
 #include "Lista.h"
+#include <iostream>
+using namespace std;
 
 /**
  * @brief Constructor de la clase Lista.
@@ -77,6 +79,7 @@ void Lista::clear(){
     delete temp;
 }
 bool Lista::contiene(Nodo *ref) {
+    cout<<head<<endl;
     Nodo *temp;
     temp = head;
     while (temp!=NULL) {

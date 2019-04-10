@@ -7,6 +7,7 @@
 #include <arpa/inet.h> //close
 #include "empaquetar.h"
 #include "json.hpp"
+#include "Juego.h"
 #include <string>
 
 
@@ -27,6 +28,7 @@ Lista *ListaCambiosServer = new Lista();
 using namespace std;
 
 int main(int argc, char *argv[]) {
+    Juego *juego1= new Juego(0,3);
     int opt = TRUE;
     int master_socket, largoDireccion, nuevoSocket, socketCliente[4],
             numMaxClientes = 4, actividad, i, valorLeido, sd;
@@ -184,53 +186,32 @@ int main(int argc, char *argv[]) {
 
                     Empaquetar *recibido = desempaquetar(StringtoJson(info));
 
-                    for (int i = 0; i < recibido->getListaCambios()->size; i++) {
-                        Nodo *cambio = recibido->getListaCambios()->retornar(i);
-                        cout << cambio->letra << endl;
-                        if(ListaCambiosServer->contiene(cambio)==false){
-                            ListaCambiosServer->addLetra(cambio->letra, cambio->col, cambio->fil);
-                            cout<<"se agrego"<<endl;
+                    if (recibido->getIDjuego()==0) {
+                        juego1->recibirPaq(recibido);
+
+                        /*for (int i = 0; i < recibido->getListaCambios()->size; i++) {
+                            Nodo *cambio = recibido->getListaCambios()->retornar(i);
+                            cout << cambio->letra << endl;
+                            if(ListaCambiosServer->contiene(cambio)==false){
+                                ListaCambiosServer->addLetra(cambio->letra, cambio->col, cambio->fil);
+                                cout<<"se agrego"<<endl;
+                            }
                         }
+                        cout << "cambiosssss" << endl;
+                        ListaCambiosServer->vernodos();
+
+
+
+                        //send(sd, mensajeServer, strlen(mensajeServer), 0);
+                        cout<<GenerarPaq()<<endl;
+
+                        char *mensaje2 = GenerarPaq();
+                         */
+                        char *mensaje2=juego1->GenerarPaq();
+                        send(sd, mensaje2, strlen(mensaje2), 0);
+
                     }
-                    cout << "cambiosssss" << endl;
-                    ListaCambiosServer->vernodos();
 
-
-
-                    //send(sd, mensajeServer, strlen(mensajeServer), 0);
-                    cout<<GenerarPaq()<<endl;
-
-
-                    char *mensaje2 = GenerarPaq();
-
-                    send(sd, mensaje2, strlen(mensaje2), 0);
-
-
-                    /*string info;
-                    info = buffer;
-
-                    printf("Recibí un mensaje %i \n", sizeof(buffer));
-                    cout << info << endl;
-
-                    cout << "entra a recibir" << endl;
-
-                    Empaquetar *recibido = desempaquetar(StringtoJson(info));
-
-                    for (int i = 0; i < recibido->getListaCambios()->size; i++) {
-                        Nodo *cambio = recibido->getListaCambios()->retornar(i);
-                        ListaCambiosServer->addLetra(cambio->letra, cambio->col, cambio->fil);
-                    }
-                    cout << "cambiosssss" << endl;
-                    ListaCambiosServer->vernodos();
-
-                    //Empaquetar *enviar = new Empaquetar(0, 0, false, false, false, ListaCambiosServer);
-                    //json jsonEnviar = enviar->generarJsonEmpaquetado();
-                    string stringEnviar = "Holaaa";
-                    char mensajeServer[sizeof(stringEnviar)];
-                    strcpy(mensajeServer, stringEnviar.c_str());
-
-                    send(sd, mensajeServer, strlen(mensajeServer), 0);
-                     */
 
                 }
             }
